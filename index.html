@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLUEZY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="bg-particles"></div>
+
+<!-- 🎬 INTRO PAGE -->
+<div id="intro-page" class="page active">
+  <div class="decor-circle circle-1"></div>
+  <div class="decor-circle circle-2"></div>
+
+  <div class="logo-container">
+    <h2 class="lets-play">LET'S PLAY</h2>
+    <h1 class="main-title">🎯CLUEZY🧐</h1>
+  </div>
+
+  <div class="description-frame">
+    <div class="glass-content">
+      <p class="animated-text">
+        Selamat datang di <b class="brand">CLUEZY</b> 🎉<br><br>
+        Tebak gambar dengan benar di setiap level.<br>
+        Kamu punya <span class="highlight-box">3 nyawa ❤️❤️❤️</span>.<br>
+        Setiap <b>2 kali salah</b>, <span class="danger-text">1 nyawa</span> akan hilang.<br><br>
+        Waktu berpikir:<br>
+        <span class="timer-info">⏱️ 10 DETIK</span>
+      </p>
+
+      <button id="btnMulai">
+        <span>MULAI GAME</span>
+        <span class="icon">🎮</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 🕹️ GAME PAGE -->
+<div id="game-page" class="page">
+  <h1 id="judul-level">Level 1</h1>
+
+  <header id="game-header">
+    <button id="btnPause">⏸ Pause</button>
+    <div id="timer-text">⏱️ 10</div>
+    <div id="nyawa-info">❤️❤️❤️</div>
+  </header>
+
+  <div class="game-container">
+    <img id="gambar" src="" alt="Gambar tebakan" />
+    <input type="text" id="jawaban" placeholder="Ketik jawaban..." />
+    <button id="btnJawab">Cek Jawaban</button>
+  </div>
+</div>
+
+<!-- 🌟 POPUP -->
+<div id="popup" class="popup hidden">
+  <div class="popup-content">
+    <h2 id="popup-judul"></h2>
+    <p id="popup-pesan"></p>
+
+    <img id="popup-gambar" class="hidden" />
+
+    <div class="popup-buttons">
+      <button id="btnOK" class="hidden">OK</button>
+      <button id="btnResume" class="hidden">Lanjut</button>
+      <button id="btnHome" class="hidden">Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- ⏱️ COUNTDOWN -->
+<div id="countdown" class="hidden"></div>
+
+
+<!-- 🔊 AUDIO -->
+<div id="audio-library">
+    <audio id="snd-start" src="SOUND GAMES/gamestart.mp3" preload="auto"></audio>
+    <audio id="snd-count" src="SOUND GAMES/countdown.mp3" preload="auto"></audio>
+    <audio id="snd-lose" src="SOUND GAMES/lose.mp3" preload="auto"></audio>
+</div>
+
+<script src="javascript.js"></script>
+</body> 
+</html>
