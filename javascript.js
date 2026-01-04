@@ -14,14 +14,14 @@ const levels = [
     { src: "TEBAK GAMBAR lv 2/a siluet/2.png", srcAsli: "TEBAK GAMBAR lv 2/asli/KELOMANG.jpg", jawaban: "kelomang" },
     { src: "TEBAK GAMBAR lv 2/a siluet/3.png", srcAsli: "TEBAK GAMBAR lv 2/asli/MAMMOTH.jpg", jawaban: "mammoth" },
     { src: "TEBAK GAMBAR lv 2/a siluet/4.png", srcAsli: "TEBAK GAMBAR lv 2/asli/SERIGALA.jpg", jawaban: "serigala" },
-    { src: "TEBAK GAMBAR lv 2/a siluet/5.png", srcAsli: "TEBAK GAMBAR lv 2/asli/TOKEK.jpg", jawaban: "tokek" }
+    { src: "TEBAK GAMBAR lv 2/a siluet/5.png", srcAsli: "TEBAK GAMBAR lv 2/asli/TOKEK.jpeg", jawaban: "tokek" }
   ],
   [
     { src: "TEBAK GAMBAR lv 3/a siluet/1.png", srcAsli: "TEBAK GAMBAR lv 3/asli/CLEANING SERVICE.jpg", jawaban: "cleaning service" },
     { src: "TEBAK GAMBAR lv 3/a siluet/2.png", srcAsli: "TEBAK GAMBAR lv 3/asli/DOKTER.jpg", jawaban: "dokter" },
     { src: "TEBAK GAMBAR lv 3/a siluet/3.png", srcAsli: "TEBAK GAMBAR lv 3/asli/KOKI.jpg", jawaban: "koki" },
     { src: "TEBAK GAMBAR lv 3/a siluet/4.png", srcAsli: "TEBAK GAMBAR lv 3/asli/PENGAJAR.jpg", jawaban: "pengajar" },
-    { src: "TEBAK GAMBAR lv 3/a siluet/5.png", srcAsli: "TEBAK GAMBAR lv 3/asli/PILOT.jpeg", jawaban: "pilot" }
+    { src: "TEBAK GAMBAR lv 3/a siluet/5.png", srcAsli: "TEBAK GAMBAR lv 3/asli/PILOT.jpg", jawaban: "pilot" }
   ]
 ];
 
@@ -163,8 +163,6 @@ function waktuHabis() {
   paused = true;
   clearInterval(timer);
 
-  popupGambar.src = levels[levelIndex][soalIndex];
-  
 
   showPopup("⏰ Waktu Habis", "Tekan OK untuk lanjut", true);
 
@@ -203,8 +201,10 @@ btnJawab.onclick = () => {
   clearInterval(timer);
   paused = true;
 
-  popupGambar.src = levels[levelIndex][soalIndex].srcAsli;
   popupGambar.classList.remove("hidden");
+  popupGambar.style.display = "block";   // 🔥 PAKSA TAMPIL
+  popupGambar.src = levels[levelIndex][soalIndex].srcAsli;
+
 
   showPopup("✅ Benar", "Jawaban tepat!");
 
@@ -225,6 +225,7 @@ btnJawab.onclick = () => {
     nextSoal();
     };
   }
+
 
   // =====================
   // JAWABAN SALAH
@@ -288,38 +289,77 @@ btnJawab.onclick = () => {
 }
 }
 
+function showPopupImage(src) {
+  popupGambar.src = src;
+  popupGambar.classList.remove("hidden");
+  popupGambar.style.display = "block";
+}
 
 // =========================
 // NEXT SOAL / LEVEL
 // =========================
 function nextSoal() {
-  popupGambar.classList.add("hidden");
+  // popupGambar.classList.add("hidden");
   soalIndex++;
 
+  // =========================
+  // MASIH ADA SOAL
+  // =========================
   if (soalIndex < levels[levelIndex].length) {
     loadSoal();
-  } else {
-    levelIndex++;
-    soalIndex = 0;
+    return;
+  }
 
-    if (levelIndex < levels.length) {
-  paused = true;
-  clearInterval(timer);
+  // =========================
+  // SOAL HABIS → PINDAH LEVEL
+  // =========================
+  levelIndex++;
+  soalIndex = 0;
 
-  showPopup(
-    "🎉 Level Selesai",
-    `Siap masuk Level ${levelIndex + 1}?`,
-    true // ⬅️ WAJIB ADA OK
-  );
+  // =========================
+  // MASIH ADA LEVEL
+  // =========================
+  if (levelIndex < levels.length) {
+    paused = true;
+    clearInterval(timer);
 
-  btnOK.onclick = () => {
-    closePopup();
-    paused = false;
-    loadSoal();
-  };
+    showPopup(
+      "🎉 Level Selesai",
+      `Siap masuk Level ${levelIndex + 1}?`,
+      true
+    );
+
+    btnOK.onclick = () => {
+      closePopup();
+      paused = false;
+      loadSoal();
+    };
+  }
+  // =========================
+  // GAME SELESAI
+  // =========================
+  else {
+    paused = true;
+    clearInterval(timer);
+
+    showPopup(
+      "🏆 Game Selesai",
+      "Selamat! Kamu telah menyelesaikan semua level 🎉",
+      true
+    );
+
+    btnOK.classList.remove("hidden");
+    btnResume.classList.add("hidden");
+    btnHome.classList.add("hidden");
+
+    btnOK.onclick = () => {
+      backToHome();
+    };
   }
 }
-}
+
+
+
 
 
 // =========================
@@ -366,6 +406,7 @@ function showPopup(judul, pesan, withOK = false) {
 
 function closePopup() {
   popup.classList.add("hidden");
+  popupGambar.classList.add("hidden");
 }
 
 // =========================
@@ -433,4 +474,5 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("load", () => {
   countdownEl.classList.add("hidden");
 });
+
 
