@@ -50,6 +50,10 @@ const popupGambar = document.getElementById("popup-gambar");
 
 const countdownEl = document.getElementById("countdown");
 
+const sndStart = document.getElementById("snd-start");
+const sndCount = document.getElementById("snd-count");
+const sndLose  = document.getElementById("snd-lose");
+
 // =========================
 // STATE
 // =========================
@@ -59,6 +63,7 @@ let nyawa = 3;
 let salah = 0;
 let waktu = 10;
 let timer = null;
+let currentSound = null;
 let paused = false;
 
 // =========================
@@ -68,26 +73,31 @@ function startCountdown(callback) {
   let count = 3;
 
   document.body.classList.add("countdown-active");
-
   countdownEl.textContent = count;
   countdownEl.classList.remove("hidden");
 
   const cd = setInterval(() => {
-    count--;
-
     if (count > 0) {
       countdownEl.textContent = count;
-    } 
-    else if (count === 0) {
-      countdownEl.textContent = "GO!";
+
+      playSound(sndCount); // 🔊 aman
+      count--;
     } 
     else {
       clearInterval(cd);
 
-      countdownEl.classList.add("hidden");
-      document.body.classList.remove("countdown-active");
+      countdownEl.textContent = "GO!";
 
-      callback && callback();
+      // tunggu sndCount selesai dulu
+      setTimeout(() => {
+        playSound(sndStart);
+
+        setTimeout(() => {
+          countdownEl.classList.add("hidden");
+          document.body.classList.remove("countdown-active");
+          callback && callback();
+        }, 600);
+      }, 400);
     }
   }, 1000);
 }
@@ -116,6 +126,42 @@ function startGame() {
   updateNyawa();
   loadSoal();
 }
+
+// =========================
+// SOUND LOSE
+// =========================
+let loseLock = false;
+
+function playLoseSound() {
+  if (loseLock) return;
+
+  loseLock = true;
+  playSound(sndLose);
+
+  setTimeout(() => {
+    loseLock = false;
+  }, 800);
+}
+
+
+// =========================
+// SOUND START
+// =========================
+function playSound(audio) {
+  if (!audio) return;
+
+  // hentikan sound sebelumnya
+  if (currentSound && currentSound !== audio) {
+    currentSound.pause();
+    currentSound.currentTime = 0;
+  }
+
+  audio.currentTime = 0;
+  audio.play();
+
+  currentSound = audio;
+}
+
 
 // =========================
 // LOAD SOAL
@@ -163,6 +209,7 @@ function waktuHabis() {
   paused = true;
   clearInterval(timer);
 
+  playLoseSound();
 
   showPopup("⏰ Waktu Habis", "Tekan OK untuk lanjut", true);
 
@@ -171,7 +218,6 @@ function waktuHabis() {
     paused = false;
     waktu = 10;
     startTimer();
-
     input.value = "";
     input.focus();
   };
@@ -233,7 +279,7 @@ btnJawab.onclick = () => {
   else {
   clearInterval(timer);
   paused = true;
-
+  playLoseSound();
   salah++;
 
   // 🔥 hapus jawaban langsung
@@ -248,7 +294,12 @@ btnJawab.onclick = () => {
     salah = 0;
     updateNyawa();
 
+    playLoseSound();
     if (nyawa <= 0) {
+
+      sndLose.currentTime = 0;
+      sndLose.play();
+
       showPopup("💀 Game Over", "Nyawa habis");
       btnOK.classList.remove("hidden");
       btnResume.classList.add("hidden");
@@ -359,9 +410,6 @@ function nextSoal() {
 }
 
 
-
-
-
 // =========================
 // PAUSE / RESUME
 // =========================
@@ -418,6 +466,8 @@ function updateNyawa() {
 
 function backToHome() {
   clearInterval(timer);
+
+
   popup.classList.add("hidden");
   gamePage.classList.remove("active");
   introPage.classList.add("active");
